@@ -11,7 +11,7 @@
 <h3>INSTRUCTIONS:</h3>
 
 1. Create a Telegram bot, and get the bot token.
-2. Create a file wth the name secret_tokens, and define your own bot_token, commandpassword (for commands), deletepassword (for deleting the entire database) variables.
+2. Create a file wth the name secret_tokens, and define your own bot_token, commandpassword (for commands), deletepassword (for deleting the entire database), and dbpath (database creation path, just define the folder path you want it to be put in without / or \ at the end, it will detect whether your system is Windows or Linux and behave accordingly) variables.
 
 <h3> DISCLAIMER: </h3>
 <p> This has really bad code written all across it, but it should give you an idea about the XPATH's, ID's, and CSS Selectors for the Careem ordering UI. </p> 

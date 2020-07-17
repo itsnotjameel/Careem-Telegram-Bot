@@ -1,11 +1,17 @@
 import sqlite3
-from secret_tokens import deletepassword
+import platform
+from secret_tokens import dbpath, dbname, deletepassword
 
-
+def back_or_forward_slash(directory, filename):
+    if platform.system() == "Windows":
+        return r"{directory}\{filename}".format(directory=directory, filename=filename)
+    elif platform.system() != "Windows":
+        return r"{directory}/{filename}".format(directory=directory, filename=filename)
 
 def startsqlite():
+    print("can we even print here")
     global conn
-    conn = sqlite3.connect("telegram_bot_users.db")
+    conn = sqlite3.connect(back_or_forward_slash(dbpath, dbname))
     global c
     c = conn.cursor()
 
@@ -28,21 +34,15 @@ def checkifsamedetails(user_id, goodphonenum, goodpassword):
 
 def checkifregistered(user_id):
     startsqlite()
-    c.execute(f"""SELECT Phone FROM users WHERE ID == {user_id}""")
-    print(c.fetchone())
-    if c.fetchone() != None:
+    c.execute(f"""SELECT Phone, Password FROM users WHERE ID ={user_id}""")
+    checkifregisteredinfo = c.fetchone()
+    if len(checkifregisteredinfo) == 2:
         global savednumber
-        savednumber = c.fetchone()
-        c.execute(f"""SELECT Password FROM users WHERE ID =={user_id}""")
-        if c.fetchone() != None:
-            c.execute(f"""SELECT Password FROM users WHERE ID == {user_id}""")
-            global savedpassword
-            savedpassword = c.fetchone()
-            endsqlite()
-            return True
-        else:
-            endsqlite()
-            return False
+        savednumber = checkifregisteredinfo[0]
+        global savedpassword
+        savedpassword = checkifregisteredinfo[1]
+        endsqlite()
+        return True
     else:
         endsqlite()
         return False

@@ -1,1 +1,5 @@
 secret_tokens.py
+/__pycache__
+geckodriver.log
+*.db
+*.png

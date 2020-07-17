@@ -20,8 +20,8 @@ from datetime import datetime
 import random
 import os
 import requests
-from secret_tokens import my_bot_token, commandpassword
-from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata, deleteeverything
+from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath
+from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata, deleteeverything, back_or_forward_slash
 
 
 logging.basicConfig(
@@ -189,8 +189,7 @@ numbers = []
 
 def screenshot(update, context):
     scr1 = pyautogui.screenshot()
-    dt = r"/root/Desktop/Careem-Telegram-Bot/Careem-Bot-Screenshots/screengrab-" + \
-        datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png"
+    dt = back_or_forward_slash(screenshotpath, screenshotfilename)
     scr1.save(dt)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
@@ -320,9 +319,9 @@ def dropoff(update, context):
             a.click()
     time.sleep(5)
     driver.find_element_by_id('userLocation').click()
-    time.sleep(5)
+    time.sleep(6)
     driver.find_element_by_id('dropoff_input').click()
-    time.sleep(5)
+    time.sleep(6)
     driver.find_element_by_xpath(
         "//div[@class='col-sm-10 col-md-8 dropOffInputContainer']//a[contains(.,'Choose saved locations')]").click()
     time.sleep(5)
@@ -337,7 +336,7 @@ def dropoff(update, context):
     driver.find_element_by_xpath(
         "//select[@id='paymentOptionsSelector']/option[text()='Cash']").click()
     time.sleep(3)
-    dt2 = r"/root/Desktop/Careem-Telegram-Bot/Careem-Bot-Screenshots/screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png"
+    dt2 = f"{back_or_forward_slash(screenshotpath, screenshotfilename)}"
     pyautogui.screenshot().save(dt2)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
