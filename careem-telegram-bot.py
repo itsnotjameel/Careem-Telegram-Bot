@@ -55,6 +55,26 @@ def careem(update, context):
     # VPN PROCESS BELOW, MIGHT NOT BE NEEDED IF YOU'RE IN A CAREEM-SUPPORTED COUNTRY
     # -----------------------------------------------------------------------------
     
+    
+    extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/' 
+    extensions = [
+        '{fca67f41-776b-438a-9382-662171858615}.xpi'
+    ]
+    for extension in extensions:
+        driver.install_addon(extension_dir + extension, temporary=True)
+    time.sleep(10)
+    pyautogui.click(1220, 110) #extension icon
+    time.sleep(5)
+    pyautogui.click(1143, 459) #agree
+    time.sleep(5)
+    pyautogui.click(1045,255) #us
+    time.sleep(5)
+    pyautogui.click(1035, 290) #algeria
+    time.sleep(10)
+    pyautogui.hotkey('ctrl', 'w')
+
+
+
     # -------------------------------------------------------------------
     # VPN PROCESS DONE
 

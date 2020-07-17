@@ -9,7 +9,6 @@ def back_or_forward_slash(directory, filename):
         return r"{directory}/{filename}".format(directory=directory, filename=filename)
 
 def startsqlite():
-    print("can we even print here")
     global conn
     conn = sqlite3.connect(back_or_forward_slash(dbpath, dbname))
     global c
