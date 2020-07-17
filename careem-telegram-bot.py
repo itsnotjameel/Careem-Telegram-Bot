@@ -261,7 +261,7 @@ def password(update, context):
         print("Timed out waiting for page to load")
     finally:
         print("Page loaded")
-    time.sleep(15)
+    time.sleep(30)
     driver.find_element_by_id("pickup_input").click()
     time.sleep(10)
     driver.find_element_by_xpath("//a[@class='savLocLink']").click()
