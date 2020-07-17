@@ -20,9 +20,9 @@ from datetime import datetime
 import random
 import os
 import requests
+from back_or_forward_slash import back_or_forward_slash
 from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath
-from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata, deleteeverything, back_or_forward_slash
-
+from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata, deleteeverything
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -255,10 +255,6 @@ def password(update, context):
         print("Page loaded")
     time.sleep(15)
     driver.find_element_by_id("pickup_input").click()
-    # wait(
-    #     driver, 100).until(
-    #     EC.element_to_be_clickable(
-    #         (By.ID, "pickup_input"))).click()
     time.sleep(10)
     driver.find_element_by_xpath("//a[@class='savLocLink']").click()
     time.sleep(5)

@@ -1,12 +1,11 @@
 import sqlite3
 import platform
+from back_or_forward_slash import back_or_forward_slash
 from secret_tokens import dbpath, dbname, deletepassword
 
-def back_or_forward_slash(directory, filename):
-    if platform.system() == "Windows":
-        return r"{directory}\{filename}".format(directory=directory, filename=filename)
-    elif platform.system() != "Windows":
-        return r"{directory}/{filename}".format(directory=directory, filename=filename)
+
+
+
 
 def startsqlite():
     global conn
