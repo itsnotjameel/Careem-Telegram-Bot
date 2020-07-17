@@ -14,6 +14,7 @@
 2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandpassword, deletepassword,  dbname, dbpath, screenshotpath, screenshotfilename`
 
 <h5>Ideal secret_tokens.py file:</h5>
+
 ```python
 from datetime import datetime
 from back_or_forward_slash import back_or_forward_slash
@@ -24,7 +25,9 @@ deletepassword = "Password Here"
 dbname = "databasenamehere.db"
 dbpath = r"{path}".format(path=os.getcwd())
 screenshotpath = r"{path}".format(path=back_or_forward_slash(os.getcwd(), "Careem-Bot-Screenshots"))
-screenshotfilename = "screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png"```
+screenshotfilename = "screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png"
+```
+
 <p>Only things you need to change here are my_bot_token, commandpassword, deletepassword, dbname. DBPath, screenshotpath are based on your current working directory, and screenshotfilename has a timestamp on it.</p>
 
 <h3> DISCLAIMER: </h3>
