@@ -19,6 +19,7 @@ import code
 from datetime import datetime
 import random
 import os
+from sys import platform
 import requests
 from back_or_forward_slash import back_or_forward_slash
 from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath
@@ -56,24 +57,24 @@ def careem(update, context):
     # -----------------------------------------------------------------------------
     
     
-    extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/' 
-    extensions = [
-        '{fca67f41-776b-438a-9382-662171858615}.xpi'
-    ]
-    for extension in extensions:
-        driver.install_addon(extension_dir + extension, temporary=True)
-    time.sleep(10)
-    pyautogui.click(1220, 110) #extension icon
-    time.sleep(3)
-    pyautogui.click(1080, 570) #thanks
-    time.sleep(3)
-    pyautogui.click(1143, 459) #agree
-    time.sleep(3)
-    pyautogui.click(1010,240) #us
-    time.sleep(3)
-    pyautogui.click(1035, 310) #algeria
-    time.sleep(10)
-    pyautogui.hotkey('ctrl', 'w')
+    # extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/' 
+    # extensions = [
+    #     '{fca67f41-776b-438a-9382-662171858615}.xpi'
+    # ]
+    # for extension in extensions:
+    #     driver.install_addon(extension_dir + extension, temporary=True)
+    # time.sleep(10)
+    # pyautogui.click(1220, 110) #extension icon
+    # time.sleep(3)
+    # pyautogui.click(1080, 570) #thanks
+    # time.sleep(3)
+    # pyautogui.click(1145,445) #agree
+    # time.sleep(3)
+    # pyautogui.click(1010,240) #us
+    # time.sleep(3)
+    # pyautogui.click(1035, 310) #algeria
+    # time.sleep(10)
+    # pyautogui.hotkey('ctrl', 'w')
 
 
 
@@ -193,6 +194,11 @@ def phoneconfirm(update, context):
 
 numbers = []
 
+if not os.path.exists(screenshotpath):
+    if platform == "Windows":
+        os.makedirs(screenshotpath.split("\\")[-1])
+    else:
+        os.makedirs(screenshotpath.split("/")[-1])
 
 def screenshot(update, context):
     scr1 = pyautogui.screenshot()
