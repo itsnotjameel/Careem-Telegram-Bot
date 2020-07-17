@@ -69,9 +69,9 @@ def careem(update, context):
     time.sleep(3)
     pyautogui.click(1143, 459) #agree
     time.sleep(3)
-    pyautogui.click(1045,255) #us
+    pyautogui.click(1010,240) #us
     time.sleep(3)
-    pyautogui.click(1035, 290) #algeria
+    pyautogui.click(1035, 310) #algeria
     time.sleep(10)
     pyautogui.hotkey('ctrl', 'w')
 

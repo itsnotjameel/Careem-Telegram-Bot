@@ -34,7 +34,7 @@ def checkifregistered(user_id):
     startsqlite()
     c.execute(f"""SELECT Phone, Password FROM users WHERE ID ={user_id}""")
     checkifregisteredinfo = c.fetchone()
-    if len(checkifregisteredinfo) == 2:
+    if checkifregisteredinfo != None and len(checkifregisteredinfo) == 2:
         global savednumber
         savednumber = checkifregisteredinfo[0]
         global savedpassword
