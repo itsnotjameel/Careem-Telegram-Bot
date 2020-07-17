@@ -64,11 +64,13 @@ def careem(update, context):
         driver.install_addon(extension_dir + extension, temporary=True)
     time.sleep(10)
     pyautogui.click(1220, 110) #extension icon
-    time.sleep(5)
+    time.sleep(3)
+    pyautogui.click(1080, 570) #thanks
+    time.sleep(3)
     pyautogui.click(1143, 459) #agree
-    time.sleep(5)
+    time.sleep(3)
     pyautogui.click(1045,255) #us
-    time.sleep(5)
+    time.sleep(3)
     pyautogui.click(1035, 290) #algeria
     time.sleep(10)
     pyautogui.hotkey('ctrl', 'w')
