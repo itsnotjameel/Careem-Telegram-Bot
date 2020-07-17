@@ -57,24 +57,24 @@ def careem(update, context):
     # -----------------------------------------------------------------------------
     
     
-    # extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/' 
-    # extensions = [
-    #     '{fca67f41-776b-438a-9382-662171858615}.xpi'
-    # ]
-    # for extension in extensions:
-    #     driver.install_addon(extension_dir + extension, temporary=True)
-    # time.sleep(10)
-    # pyautogui.click(1220, 110) #extension icon
-    # time.sleep(3)
-    # pyautogui.click(1080, 570) #thanks
-    # time.sleep(3)
-    # pyautogui.click(1145,445) #agree
-    # time.sleep(3)
-    # pyautogui.click(1010,240) #us
-    # time.sleep(3)
-    # pyautogui.click(1035, 310) #algeria
-    # time.sleep(10)
-    # pyautogui.hotkey('ctrl', 'w')
+    extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/' 
+    extensions = [
+        '{fca67f41-776b-438a-9382-662171858615}.xpi'
+    ]
+    for extension in extensions:
+        driver.install_addon(extension_dir + extension, temporary=True)
+    time.sleep(10)
+    pyautogui.click(1220, 110) #extension icon
+    time.sleep(3)
+    pyautogui.click(1080, 570) #thanks
+    time.sleep(3)
+    pyautogui.click(1145,445) #agree
+    time.sleep(3)
+    pyautogui.click(1010,240) #us
+    time.sleep(3)
+    pyautogui.click(1035, 310) #algeria
+    time.sleep(10)
+    pyautogui.hotkey('ctrl', 'w')
 
 
 
