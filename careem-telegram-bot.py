@@ -358,7 +358,7 @@ def dropoff(update, context):
     return ConversationHandler.END
 
 def confirm(update,context):
-    driver.find_element_by_class_name("btn actionBtn left-right ng-binding").click()
+    driver.find_element_by_xpath("//button[@class='btn actionBtn left-right ng-binding']")
     context.bot.send_message(
     chat_id=update.effective_chat.id,
     text="Ordering... Use /screenshot to view a screenshot of the status")  
