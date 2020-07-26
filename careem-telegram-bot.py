@@ -1,28 +1,28 @@
-import pyautogui
-import time
 from selenium import webdriver
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import Select, WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
-from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove)
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram import replymarkup, replykeyboardmarkup, replykeyboardremove
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup, replymarkup, replykeyboardmarkup, replykeyboardremove
+import pyautogui
+import time
 import sqlite3
 import logging
 import re
-import code
+import numpy as np
+import pylab as plt
+from pilkit.lib import Image
+from pilkit.processors import TrimBorderColor
 from datetime import datetime
 import random
 import os
 from sys import platform
 import requests
+from showcoords import showcoords
 from back_or_forward_slash import back_or_forward_slash
-from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath
+from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath, clickpassword
 from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata, deleteeverything
 
 logging.basicConfig(
@@ -37,7 +37,15 @@ def hasNumbers(inputString):
 startcommandused = False
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, 
-                 text=f'Welcome to CareeemBot!\n Use /careem to start the ordering process \n To restart the machine, use /restart \n To take a screenshot, use /screenshot \n To give system commands, use /command [password] [command] \n Your User ID is: {update.effective_user.id}', 
+                 text=f"""Welcome to CareeemBot!
+                 \n-Use /careem to start the ordering process 
+                 \n-To restart the machine, use /restart 
+                 \n-To take a screenshot, use /screenshot 
+                 \n-(for admins) To give system commands, use /command [password] [command] 
+                 \n-(for admins) To get screen coordinates, use /coords [password] 
+                 \n-(for admins) To click using PyAutoGUI, use /click [password] [x] [y] 
+                 \n-(for admins) To show a supposed click's coordinates, use /showdot [password] [x] [y]
+                 \n-Your User ID is: {update.effective_user.id}""", 
                  reply_markup = ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]], one_time_keyboard=True))
     global theuserid
     theuserid = update.effective_chat.id
@@ -124,6 +132,67 @@ def command(update, context):
         context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Incorrect password, try using /command again")
+
+def coords(update, context):
+    if update.message.text.split(" ")[1] != clickpassword:
+        context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Wrong password! Try again")
+        return None
+    showcoords()
+    from showcoords import mousechartfullpath
+    context.bot.send_photo(
+        chat_id=update.effective_chat.id,
+        photo=open(
+            mousechartfullpath,
+            'rb'))
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Use '/click [password] [x] [y]' to click on coordinates. Or /showdot [password] [x] [y] to view a red dot on your coordinates")
+
+def showdot(update, context):
+    if update.message.text.split(" ")[1] != clickpassword:
+        context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Wrong password! Try again")
+        return None
+    try:
+        showcoords(
+        click_x=[int(update.message.text.split(" ")[2])], 
+        click_y=[int(update.message.text.split(" ")[3])]
+        )
+    except:
+        context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="You're using incorrect syntax, refer to previous example.")
+        return None
+
+    from showcoords import mousechartfullpath
+    context.bot.send_photo(
+        chat_id=update.effective_chat.id,
+        photo=open(
+            mousechartfullpath,
+            'rb'))
+
+def click(update, context): 
+    if update.message.text.split(" ")[1] != clickpassword:
+        context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Wrong password! Try again")
+        return None
+    try:
+        x_click_cords = int(update.message.text.split(" ")[2])
+        y_click_cords = int(update.message.text.split(" ")[3])
+    except:
+        context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="You're using incorrect syntax, refer to previous example.")
+        return None
+    pyautogui.click(x_click_cords, y_click_cords)
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Clicked.")
+
 
 def phone(update, context):
     if "use" in update.message.text.lower() and checkifregistered(theuserid) == True:
@@ -379,6 +448,9 @@ def main():
     dp.add_handler(CommandHandler("restart", restart))
     dp.add_handler(CommandHandler("screenshot", screenshot))
     dp.add_handler(CommandHandler("command", command))
+    dp.add_handler(CommandHandler("coords", coords))
+    dp.add_handler(CommandHandler("showdot", showdot))
+    dp.add_handler(CommandHandler("click", click))
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('careem', careem)],
 
