@@ -1,0 +1,8 @@
+numpy==1.18.5
+pilkit==2.0
+python_telegram_bot==12.7
+PyAutoGUI==0.9.50
+selenium==3.141.0
+matplotlib==3.3.0
+requests==2.22.0
+telegram==0.0.1
