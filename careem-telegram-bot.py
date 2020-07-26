@@ -29,62 +29,68 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 
-CAREEM, PHONE, ASK_ABOUT_PHONE, PHONECONFIRM, VERIFY, PASSWORD, SAVEINFO, PICKUP, DROPOFF = range(9)
+CAREEM, PHONE, ASK_ABOUT_PHONE, PHONECONFIRM, VERIFY, PASSWORD, SAVEINFO, PICKUP, DROPOFF = range(
+    9)
+
 
 def hasNumbers(inputString):
     return any(char.isdigit() for char in inputString)
 
+
 startcommandused = False
+
+
 def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, 
-                 text=f"""Welcome to CareeemBot!
-                 \n-Use /careem to start the ordering process 
-                 \n-To restart the machine, use /restart 
-                 \n-To take a screenshot, use /screenshot 
-                 \n-(for admins) To give system commands, use /command [password] [command] 
-                 \n-(for admins) To get screen coordinates, use /coords [password] 
-                 \n-(for admins) To click using PyAutoGUI, use /click [password] [x] [y] 
-                 \n-(for admins) To show a supposed click's coordinates, use /showdot [password] [x] [y]
-                 \n-Your User ID is: {update.effective_user.id}""", 
-                 reply_markup = ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]], one_time_keyboard=True))
+    context.bot.send_message(chat_id=update.effective_chat.id, text=f"""Welcome to CareeemBot!
+                 \n-Use /careem to start the ordering process
+                 \n-To take a screenshot, use /screenshot
+                 \n-(for admins) To restart the machine, use /restart [commandpassword]
+                 \n-(for admins) To give system commands, use /command [commandpassword] [command]
+                 \n-(for admins) To get screen coordinates, use /coords [clickpassword]
+                 \n-(for admins) To click using PyAutoGUI, use /click [clickpassword] [x] [y]
+                 \n-(for admins) To show a supposed click's coordinates, use /showdot [clickpassword] [x] [y]
+                 \n-Your User ID is: {update.effective_user.id}""",
+                             reply_markup=ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]], one_time_keyboard=True))
     global theuserid
     theuserid = update.effective_chat.id
 
     global startcommandused
     startcommandused = True
 
+
 def careem(update, context):
-    
-    if startcommandused != True:
-        context.bot.send_message(chat_id = update.effective_chat.id, text = "You need to use the /start command first to register the User ID, try again")
+
+    if not startcommandused:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="You need to use the /start command first to register the User ID, try again")
         return
-    context.bot.send_message(chat_id = update.effective_chat.id, text = "Note: You can use the /cancel command to cancel the ordering process at any time. \nLoading the Careem webpage, please wait...")
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Note: You can use the /cancel command to cancel the ordering process at any time. \nLoading the Careem webpage, please wait...")
     global driver
     driver = webdriver.Firefox()
     # VPN PROCESS BELOW, MIGHT NOT BE NEEDED IF YOU'RE IN A CAREEM-SUPPORTED COUNTRY
     # -----------------------------------------------------------------------------
-    
-    
-    extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/' 
+
+    extension_dir = '/root/.mozilla/firefox/siro1t0y.default-release/extensions/'
     extensions = [
         '{fca67f41-776b-438a-9382-662171858615}.xpi'
     ]
     for extension in extensions:
         driver.install_addon(extension_dir + extension, temporary=True)
     time.sleep(10)
-    pyautogui.click(1220, 110) #extension icon
+    pyautogui.click(1220, 110)  # extension icon
     time.sleep(3)
-    pyautogui.click(1080, 570) #thanks
+    pyautogui.click(1080, 570)  # thanks
     time.sleep(3)
-    pyautogui.click(1145,445) #agree
+    pyautogui.click(1145, 445)  # agree
     time.sleep(3)
-    pyautogui.click(1010,240) #us
+    pyautogui.click(1010, 240)  # us
     time.sleep(3)
-    pyautogui.click(1035, 310) #algeria
+    pyautogui.click(1035, 310)  # algeria
     time.sleep(10)
     pyautogui.hotkey('ctrl', 'w')
-
-
 
     # -------------------------------------------------------------------
     # VPN PROCESS DONE
@@ -100,44 +106,62 @@ def careem(update, context):
             (By.XPATH, "//span[text()='+964']"))).click()
     global user
     user = driver.find_element_by_id('mobileNumber')
-    context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Careem page loaded! Send your phone number, using plain text.", reply_markup = ReplyKeyboardMarkup([["/cancel", "/restart", "/screenshot"]], one_time_keyboard=True))
-    if checkifregistered(theuserid) == True:
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text="Careem page loaded! Send your phone number, using plain text.",
+                             reply_markup=ReplyKeyboardMarkup([["/cancel",
+                                                                "/restart",
+                                                                "/screenshot"]],
+                                                              one_time_keyboard=True))
+    if checkifregistered(theuserid):
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="You have saved info, would you like to use it? Type 'use' if you want to, or carry on like usual.", reply_markup = ReplyKeyboardMarkup([["use", "/cancel", "/restart", "/screenshot"]], one_time_keyboard=True))
+            chat_id=update.effective_chat.id,
+            text="You have saved info, would you like to use it? Type 'use' if you want to, or carry on like usual.",
+            reply_markup=ReplyKeyboardMarkup(
+                [
+                    [
+                        "use",
+                        "/cancel",
+                        "/restart",
+                        "/screenshot"]],
+                one_time_keyboard=True))
     return PHONE
-    
+
 
 def restart(update, context):
+    if update.message.text.split(" ")[1] != commandpassword:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Wrong password! Try again")
+        return None
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Restarting, please wait for 30 seconds")
     time.sleep(5)
     os.system("sudo reboot")
 
+
 def command(update, context):
     if commandpassword in update.message.text:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Correct password, executing")
+            chat_id=update.effective_chat.id,
+            text="Correct password, executing")
         actualcommand = update.message.text.split(" ", 2)[2]
         command_output = os.popen(actualcommand).read()
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text=f"Output: \n {command_output}")
+            chat_id=update.effective_chat.id,
+            text=f"Output: \n {command_output}")
 
     elif commandpassword not in update.message.text:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Incorrect password, try using /command again")
+            chat_id=update.effective_chat.id,
+            text="Incorrect password, try using /command again")
+
 
 def coords(update, context):
     if update.message.text.split(" ")[1] != clickpassword:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Wrong password! Try again")
+            chat_id=update.effective_chat.id,
+            text="Wrong password! Try again")
         return None
     showcoords()
     from showcoords import mousechartfullpath
@@ -150,21 +174,22 @@ def coords(update, context):
         chat_id=update.effective_chat.id,
         text="Use '/click [password] [x] [y]' to click on coordinates. Or /showdot [password] [x] [y] to view a red dot on your coordinates")
 
+
 def showdot(update, context):
     if update.message.text.split(" ")[1] != clickpassword:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Wrong password! Try again")
+            chat_id=update.effective_chat.id,
+            text="Wrong password! Try again")
         return None
     try:
         showcoords(
-        click_x=[int(update.message.text.split(" ")[2])], 
-        click_y=[int(update.message.text.split(" ")[3])]
+            click_x=[int(update.message.text.split(" ")[2])],
+            click_y=[int(update.message.text.split(" ")[3])]
         )
-    except:
+    except BaseException:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="You're using incorrect syntax, refer to previous example.")
+            chat_id=update.effective_chat.id,
+            text="You're using incorrect syntax, refer to previous example.")
         return None
 
     from showcoords import mousechartfullpath
@@ -174,19 +199,20 @@ def showdot(update, context):
             mousechartfullpath,
             'rb'))
 
-def click(update, context): 
+
+def click(update, context):
     if update.message.text.split(" ")[1] != clickpassword:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Wrong password! Try again")
+            chat_id=update.effective_chat.id,
+            text="Wrong password! Try again")
         return None
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
         y_click_cords = int(update.message.text.split(" ")[3])
-    except:
+    except BaseException:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="You're using incorrect syntax, refer to previous example.")
+            chat_id=update.effective_chat.id,
+            text="You're using incorrect syntax, refer to previous example.")
         return None
     pyautogui.click(x_click_cords, y_click_cords)
     context.bot.send_message(
@@ -195,32 +221,36 @@ def click(update, context):
 
 
 def phone(update, context):
-    if "use" in update.message.text.lower() and checkifregistered(theuserid) == True:
+    if "use" in update.message.text.lower() and checkifregistered(theuserid):
         global wantsavedinfo
         wantsavedinfo = True
         checkifregistered(theuserid)
         from sqlitedb import savednumber
-        
+
         user.send_keys(str(savednumber))
-        time.sleep(random.randint(3,10))
+        time.sleep(random.randint(3, 10))
         wait(
-        driver, 20).until(
-        EC.element_to_be_clickable(
-            (By.ID, "login-btn"))).click()
+            driver, 20).until(
+            EC.element_to_be_clickable(
+                (By.ID, "login-btn"))).click()
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Send me the code, use text")
+            chat_id=update.effective_chat.id,
+            text="Send me the code, use text")
         return VERIFY
     else:
         wantsavedinfo = False
         context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="Please type anything and send it to pass to the next process", reply_markup = ReplyKeyboardMarkup([["okay"]], one_time_keyboard=True))
-        
+            chat_id=update.effective_chat.id,
+            text="Please type anything and send it to pass to the next process",
+            reply_markup=ReplyKeyboardMarkup(
+                [
+                    ["okay"]],
+                one_time_keyboard=True))
+
     phonenumberarray = []
     for i in update.message.text:
-            if i in "0123456789":
-                phonenumberarray.append(i)
+        if i in "0123456789":
+            phonenumberarray.append(i)
     global goodphonenum
     goodphonenum = "".join(phonenumberarray)
     return ASK_ABOUT_PHONE
@@ -230,23 +260,23 @@ def ask_about_phone(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Are you sure? Send 'yes' if you are, or send 'no' if you want to use another number",
-        reply_markup = ReplyKeyboardMarkup([["yes", "no", "/cancel", "/screenshot"]], one_time_keyboard=True))
+        reply_markup=ReplyKeyboardMarkup([["yes", "no", "/cancel", "/screenshot"]], one_time_keyboard=True))
     return PHONECONFIRM
-    
+
 
 def phoneconfirm(update, context):
     if "no" in update.message.text:
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Okay, send me the correct number")
+            chat_id=update.effective_chat.id,
+            text="Okay, send me the correct number")
         return ASK_ABOUT_PHONE
     elif "yes" in update.message.text.lower():
         user.send_keys(str(goodphonenum))
         wait(
-        driver, 20).until(
-        EC.element_to_be_clickable(
-            (By.ID, "login-btn"))).click()
-        time.sleep(random.randint(3,10))
+            driver, 20).until(
+            EC.element_to_be_clickable(
+                (By.ID, "login-btn"))).click()
+        time.sleep(random.randint(3, 10))
         wait(
             driver, 20).until(
             EC.element_to_be_clickable(
@@ -269,6 +299,7 @@ if not os.path.exists(screenshotpath):
     else:
         os.makedirs(screenshotpath.split("/")[-1])
 
+
 def screenshot(update, context):
     scr1 = pyautogui.screenshot()
     dt = back_or_forward_slash(screenshotpath, screenshotfilename)
@@ -283,33 +314,38 @@ def screenshot(update, context):
 def verify(update, context):
     if hasNumbers(update.message.text):
         global code
-        code = re.findall('\\d+', update.message.text) #get numbers from text
+        code = re.findall('\\d+', update.message.text)  # get numbers from text
         form = driver.find_element_by_id('otp')
         form.send_keys(code)
         time.sleep(5)
         driver.find_element_by_id('login-btn').click()
         time.sleep(10)
-        driver.find_element_by_css_selector('.material-form-field input').click()
-        if wantsavedinfo != True:
+        driver.find_element_by_css_selector(
+            '.material-form-field input').click()
+        if not wantsavedinfo:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Great, send your password, use text")
-        elif wantsavedinfo == True:
+        elif wantsavedinfo:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Please type anything and send it to pass to the next process", reply_markup = ReplyKeyboardMarkup([["okay"]], one_time_keyboard=True))  ##user needs to send something
+                text="Please type anything and send it to pass to the next process",
+                reply_markup=ReplyKeyboardMarkup(
+                    [
+                        ["okay"]],
+                    one_time_keyboard=True))  # user needs to send something
             return PASSWORD
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="There isn't a number in the message you sent, try again")
-    
+
     return PASSWORD
 
 
 def password(update, context):
-    
-    if wantsavedinfo == True:
+
+    if wantsavedinfo:
         from sqlitedb import savedpassword
         firstpassword = savedpassword
     else:
@@ -324,7 +360,8 @@ def password(update, context):
     time.sleep(30)
     timeout = 300
     try:
-        element_present = EC.presence_of_element_located((By.ID, 'pickup_input'))
+        element_present = EC.presence_of_element_located(
+            (By.ID, 'pickup_input'))
         wait(driver, timeout).until(element_present)
     except TimeoutException:
         print("Timed out waiting for page to load")
@@ -335,48 +372,53 @@ def password(update, context):
     time.sleep(10)
     driver.find_element_by_xpath("//a[@class='savLocLink']").click()
     time.sleep(5)
-    if wantsavedinfo != True:
-        if  checkifsamedetails(theuserid, goodphonenum, goodpassword) == True:
-            context.bot.send_message(chat_id = update.effective_chat.id, text= "The details you entered already exist in our database. You could type 'use' next time.")
+    if not wantsavedinfo:
+        if checkifsamedetails(theuserid, goodphonenum, goodpassword):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text="Please type anything and send it to pass to the next process", 
-                reply_markup = ReplyKeyboardMarkup([["okay"]], one_time_keyboard=True))
-            
+                text="The details you entered already exist in our database. You could type 'use' next time.")
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Please type anything and send it to pass to the next process",
+                reply_markup=ReplyKeyboardMarkup([["okay"]], one_time_keyboard=True))
+
         elif checkifsamedetails(theuserid, goodphonenum, goodpassword) != True:
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Do you want me to save/overwrite the phone number and password for future use? Answer with 'yes or 'no' ",
-                reply_markup = ReplyKeyboardMarkup([["yes", "no", "/cancel", "/restart", "/screenshot"]], one_time_keyboard=True))
-    elif wantsavedinfo == True:
+                reply_markup=ReplyKeyboardMarkup([["yes", "no", "/cancel", "/restart", "/screenshot"]], one_time_keyboard=True))
+    elif wantsavedinfo:
         context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="Please type anything and send it to pass to the next process", reply_markup = ReplyKeyboardMarkup([["okay"]], one_time_keyboard=True))
+            chat_id=update.effective_chat.id,
+            text="Please type anything and send it to pass to the next process",
+            reply_markup=ReplyKeyboardMarkup(
+                [
+                    ["okay"]],
+                one_time_keyboard=True))
     return SAVEINFO
-
 
 
 def saveinfo(update, context):
     if "yes" in update.message.text.lower():
-        if checkifregistered(theuserid) == True:
+        if checkifregistered(theuserid):
             replacedata(theuserid, goodphonenum, goodpassword)
         else:
             enternewdata(theuserid, goodphonenum, goodpassword)
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Data Saved")
+            chat_id=update.effective_chat.id,
+            text="Data Saved")
     elif "no" in update.message.text.lower():
         context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text="Okay, data not saved")
+            chat_id=update.effective_chat.id,
+            text="Okay, data not saved")
     else:
         print("nothing happened")
-    
-    
+
     context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Type the pickup point using text, it must be in your saved locations (you can type a word unique to it and the bot will find it) ")
+        chat_id=update.effective_chat.id,
+        text="Type the pickup point using text, it must be in your saved locations (you can type a word unique to it and the bot will find it) ")
     return PICKUP
+
 
 def pickup(update, context):
 
@@ -386,6 +428,7 @@ def pickup(update, context):
         chat_id=update.effective_chat.id,
         text="Tell me the dropoff point using text, it also must be in your saved locations.")
     return DROPOFF
+
 
 def dropoff(update, context):
     global gooddropoff
@@ -423,24 +466,28 @@ def dropoff(update, context):
             'rb'))
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Are you sure you want to order? Type '/confirm' in order to confirm when you want")        
+        text="Are you sure you want to order? Type '/confirm' in order to confirm when you want")
     return ConversationHandler.END
 
-def confirm(update,context):
-    driver.find_element_by_xpath("//button[@class='btn actionBtn left-right ng-binding']").click()
+
+def confirm(update, context):
+    driver.find_element_by_xpath(
+        "//button[@class='btn actionBtn left-right ng-binding']").click()
     context.bot.send_message(
-    chat_id=update.effective_chat.id,
-    text="Ordering... Use /screenshot to view a screenshot of the status")  
+        chat_id=update.effective_chat.id,
+        text="Ordering... Use /screenshot to view a screenshot of the status")
+
 
 def cancel(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Canceled the ordering process.")  
+        text="Canceled the ordering process.")
     return ConversationHandler.END
+
 
 def main():
     updater = Updater(
-        my_bot_token, #sensitive
+        my_bot_token,  # sensitive
         use_context=True)
     global dp
     dp = updater.dispatcher
