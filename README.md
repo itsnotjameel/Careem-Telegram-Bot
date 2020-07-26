@@ -32,7 +32,7 @@ screenshotpath = r"{path}".format(path=back_or_forward_slash(os.getcwd(), "Caree
 screenshotfilename = "screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png"
 ```
 
-<p>Only things you need to change here are my_bot_token, commandpassword, deletepassword, dbname. DBPath, screenshotpath are based on your current working directory, and screenshotfilename has a timestamp on it.</p>
+<p>Only things you need to change here are my_bot_token, commandpassword, clickpassword, deletepassword, dbname. DBPath, screenshotpath are based on your current working directory, and screenshotfilename has a timestamp on it.</p>
 
 <h3> DISCLAIMER: </h3>
 <p> This has really bad code written all across it, but it should give you an idea about the XPATH's, ID's, and CSS Selectors for the Careem ordering UI. </p> 
