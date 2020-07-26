@@ -2,16 +2,19 @@
 
 <h3>This is a Telegram Bot made with Python that mainly initiates a conversation to order a Careem Taxi through Telegram, by logging in to the user's Careem account and ordering it.</h3>
 
-<h4>It uses Selenium, SQLite, python-telegram-bot, among others to aid with the ordering process.</h4>
+<h4>It uses Selenium, SQLite, python-telegram-bot, Matplotlib, PILKit, PyAutoGUI to aid with the ordering process.</h4>
 
 - python-telegram-bot is used to listen to the commands and messages that are sent to the bot through Telegram, and to neatly order the conversation without excessive use of commands.
 - Selenium WebDriver is used to click buttons on Careem's webpage, and send keys to fill the forms using the data the user sent. 
 - SQLite is used to save the data the user has sent in case the user wanted the sent data to be saved for later use. 
+- PyAutoGUI is used to take screenshots, I'm using this instead of ImageGrab from PIL because it is compatible for most operating systems
+- Matplotlib is used to process screenshots from PyAutoGUI, add grids onto them, and draw a dot at the user's requested coordinates (should a user request so)
+- PILKit is used to take the images produced by Matplotlib and crop them automatically to make the most out of their resolution
 
 <h3>INSTRUCTIONS:</h3>
 
 1. Create a Telegram bot, and get the bot token.
-2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandpassword, deletepassword,  dbname, dbpath, screenshotpath, screenshotfilename`
+2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandpassword, clickpassword, deletepassword, dbname, dbpath, screenshotpath, screenshotfilename`
 
 <h5>Ideal secret_tokens.py file:</h5>
 
@@ -21,6 +24,7 @@ from back_or_forward_slash import back_or_forward_slash
 import os
 my_bot_token = "Bot Token Here"
 commandpassword = "Password Here"
+clickpassword = "Password Here"
 deletepassword = "Password Here"
 dbname = "databasenamehere.db"
 dbpath = r"{path}".format(path=os.getcwd())
