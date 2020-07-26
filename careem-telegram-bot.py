@@ -49,6 +49,7 @@ def start(update, context):
                  \n-(for admins) To get screen coordinates, use /coords [clickpassword]
                  \n-(for admins) To click using PyAutoGUI, use /click [clickpassword] [x] [y]
                  \n-(for admins) To show a supposed click's coordinates, use /showdot [clickpassword] [x] [y]
+                 \n-(for admins) To type using the machine's keyboard, use /keyboard [clickpassword] [string]
                  \n-Your User ID is: {update.effective_user.id}""",
                              reply_markup=ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]], one_time_keyboard=True))
     global theuserid
@@ -219,6 +220,19 @@ def click(update, context):
         chat_id=update.effective_chat.id,
         text="Clicked.")
 
+def keyboard(update, context):
+    if update.message.text.split(" ")[1] != clickpassword:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Wrong password! Try again")
+        return None
+    try:
+        time.sleep(2)
+        pyautogui.write(update.message.text.split(" ")[2])
+    except:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="You're using incorrect syntax, refer to previous example.")
 
 def phone(update, context):
     if "use" in update.message.text.lower() and checkifregistered(theuserid):
@@ -498,6 +512,7 @@ def main():
     dp.add_handler(CommandHandler("coords", coords))
     dp.add_handler(CommandHandler("showdot", showdot))
     dp.add_handler(CommandHandler("click", click))
+    dp.add_handler(CommandHandler("keyboard", keyboard))
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('careem', careem)],
 
