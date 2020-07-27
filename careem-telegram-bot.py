@@ -322,6 +322,7 @@ def phoneconfirm(update, context):
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="I didn't get that, send me your correct phone number in plain text.")
+        return ASK_ABOUT_PHONE
 
 
 numbers = []
@@ -371,8 +372,8 @@ def verify(update, context):
     else:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="There isn't a number in the message you sent, try again")
-
+            text="There isn't a number in the message you sent, send it again")
+        return VERIFY
     return PASSWORD
 
 
