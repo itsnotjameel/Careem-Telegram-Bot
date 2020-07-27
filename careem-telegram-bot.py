@@ -47,7 +47,7 @@ def start(update, context):
                  \n-(for admins) To restart the machine, use /restart [commandpassword]
                  \n-(for admins) To give system commands, use /command [commandpassword] [command]
                  \n-(for admins) To get screen coordinates, use /coords [clickpassword]
-                 \n-(for admins) To click using PyAutoGUI, use /click [clickpassword] [x] [y]
+                 \n-(for admins) To click using PyAutoGUI, use /doubleclick or /click [clickpassword] [x] [y]
                  \n-(for admins) To show a supposed click's coordinates, use /showdot [clickpassword] [x] [y]
                  \n-(for admins) To type using the machine's keyboard, use /keyboard [clickpassword] [string]
                  \n-Your User ID is: {update.effective_user.id}""",
@@ -219,6 +219,25 @@ def click(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Clicked.")
+
+def doubleclick(update, context):
+    if update.message.text.split(" ")[1] != clickpassword:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Wrong password! Try again")
+        return None
+    try:
+        x_click_cords = int(update.message.text.split(" ")[2])
+        y_click_cords = int(update.message.text.split(" ")[3])
+    except BaseException:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="You're using incorrect syntax, refer to previous example.")
+        return None
+    pyautogui.doubleClick(x_click_cords, y_click_cords)
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Double-clicked.")
 
 def keyboard(update, context):
     if update.message.text.split(" ")[1] != clickpassword:
@@ -500,9 +519,7 @@ def cancel(update, context):
 
 
 def main():
-    updater = Updater(
-        my_bot_token,  # sensitive
-        use_context=True)
+    updater = Updater(my_bot_token, use_context=True)
     global dp
     dp = updater.dispatcher
     dp.add_handler(CommandHandler("start", start))
@@ -512,6 +529,7 @@ def main():
     dp.add_handler(CommandHandler("coords", coords))
     dp.add_handler(CommandHandler("showdot", showdot))
     dp.add_handler(CommandHandler("click", click))
+    dp.add_handler(CommandHandler("doubleclick", doubleclick))
     dp.add_handler(CommandHandler("keyboard", keyboard))
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('careem', careem)],
