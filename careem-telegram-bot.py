@@ -1,29 +1,21 @@
-from selenium import webdriver
-from selenium.webdriver.support.ui import Select, WebDriverWait as wait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup, replymarkup, replykeyboardmarkup, replykeyboardremove
-import pyautogui
-import time
-import sqlite3
 import logging
-import re
-import numpy as np
-import pylab as plt
-from pilkit.lib import Image
-from pilkit.processors import TrimBorderColor
-from datetime import datetime
-import random
 import os
+import random
+import re
+import time
 from sys import platform
-import requests
-from showcoords import showcoords
+import pyautogui
 from back_or_forward_slash import back_or_forward_slash
 from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath, clickpassword
-from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata, deleteeverything
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait as wait
+from showcoords import showcoords
+from sqlitedb import checkifsamedetails, checkifregistered, replacedata, enternewdata
+from telegram import ReplyKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -51,7 +43,8 @@ def start(update, context):
                  \n-(for admins) To show a supposed click's coordinates, use /showdot [clickpassword] [x] [y]
                  \n-(for admins) To type using the machine's keyboard, use /keyboard [clickpassword] [string]
                  \n-Your User ID is: {update.effective_user.id}""",
-                             reply_markup=ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]], one_time_keyboard=True))
+                             reply_markup=ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]],
+                                                              one_time_keyboard=True))
     global theuserid
     theuserid = update.effective_chat.id
 
@@ -60,7 +53,6 @@ def start(update, context):
 
 
 def careem(update, context):
-
     if not startcommandused:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -220,6 +212,7 @@ def click(update, context):
         chat_id=update.effective_chat.id,
         text="Clicked.")
 
+
 def doubleclick(update, context):
     if update.message.text.split(" ")[1] != clickpassword:
         context.bot.send_message(
@@ -239,6 +232,7 @@ def doubleclick(update, context):
         chat_id=update.effective_chat.id,
         text="Double-clicked.")
 
+
 def keyboard(update, context):
     if update.message.text.split(" ")[1] != clickpassword:
         context.bot.send_message(
@@ -252,6 +246,7 @@ def keyboard(update, context):
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="You're using incorrect syntax, refer to previous example.")
+
 
 def phone(update, context):
     if "use" in update.message.text.lower() and checkifregistered(theuserid):
@@ -378,7 +373,6 @@ def verify(update, context):
 
 
 def password(update, context):
-
     if wantsavedinfo:
         from sqlitedb import savedpassword
         firstpassword = savedpassword
@@ -420,7 +414,8 @@ def password(update, context):
             context.bot.send_message(
                 chat_id=update.effective_chat.id,
                 text="Do you want me to save/overwrite the phone number and password for future use? Answer with 'yes or 'no' ",
-                reply_markup=ReplyKeyboardMarkup([["yes", "no", "/cancel", "/restart", "/screenshot"]], one_time_keyboard=True))
+                reply_markup=ReplyKeyboardMarkup([["yes", "no", "/cancel", "/restart", "/screenshot"]],
+                                                 one_time_keyboard=True))
     elif wantsavedinfo:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -455,7 +450,6 @@ def saveinfo(update, context):
 
 
 def pickup(update, context):
-
     global goodpickup
     goodpickup = update.message.text
     context.bot.send_message(
