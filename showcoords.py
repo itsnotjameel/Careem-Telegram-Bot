@@ -5,6 +5,10 @@ from matplotlib.text import OffsetFrom
 from PIL import Image, ImageChops
 from secret_tokens import screenshotpath
 from back_or_forward_slash import back_or_forward_slash
+
+def rounddown(x):
+    return x/100
+
 def showcoords(click_x=None, click_y=None):
     '''Shows coordinates, possibly with red dots. click_x and click_y are arrays'''
     global mouseclickfullpath
@@ -17,11 +21,11 @@ def showcoords(click_x=None, click_y=None):
     if click_x != None and click_y != None:
         plt.scatter(x=click_x, y=click_y, c='r', s=30)
     separation = 100
-    for i in range(0, screenshotwidth, separation):
-        plt.text(i, 0, i, color="yellow", fontsize=5, horizontalalignment='center',bbox=dict(fill=True, edgecolor='red', linewidth=1))
+    for i in range(0, int((((screenshotwidth//separation)*separation)+separation)), separation):
+        plt.text(i, 0, int(i/100) if separation == 100 else i/100, color="yellow", fontsize=5, horizontalalignment='center',bbox=dict(fill=True, edgecolor='red', linewidth=1))
 
-    for i in range(0, screenshotwidth, separation):
-        plt.text(0, i, i, color="yellow", fontsize=5, verticalalignment='center', bbox=dict(fill=True, edgecolor='red', linewidth=1))
+    for i in range(0, int((((screenshotheight//separation)*separation)+separation)), separation):
+        plt.text(0, i, int(i/100) if separation == 100 else i/100, color="yellow", fontsize= 5, verticalalignment='center', bbox=dict(fill=True, edgecolor='red', linewidth=1))
     image = plt.imread(mouseclickfullpath) #matplotlib reading screenshot
     major_ticks = np.arange(0, screenshotwidth, separation) #arranging (idk, length of width, interval)
     plt.tick_params(labelsize=3.5) #font size
@@ -46,5 +50,3 @@ def showcoords(click_x=None, click_y=None):
     im = Image.open(mousechartfullpath)
     im = trim(im)
     im.save(mousechartfullpath)
-
-
