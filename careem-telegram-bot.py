@@ -194,10 +194,16 @@ def showdot(update, context):
 
 
 def click(update, context):
-    if update.message.text.split(" ")[1] != clickpassword:
+    try:
+        if update.message.text.split(" ")[1] != clickpassword:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Wrong password! Try again")
+            return None
+    except BaseException:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="Wrong password! Try again")
+            text="You're using incorrect syntax, refer to previous example.")
         return None
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
@@ -214,11 +220,18 @@ def click(update, context):
 
 
 def doubleclick(update, context):
-    if update.message.text.split(" ")[1] != clickpassword:
+    try:
+        if update.message.text.split(" ")[1] != clickpassword:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="Wrong password! Try again")
+            return None
+    except BaseException:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="Wrong password! Try again")
+            text="You're using incorrect syntax, refer to previous example.")
         return None
+
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
         y_click_cords = int(update.message.text.split(" ")[3])
@@ -242,7 +255,7 @@ def keyboard(update, context):
     try:
         time.sleep(2)
         pyautogui.write(update.message.text.split(" ")[2])
-    except:
+    except BaseException:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="You're using incorrect syntax, refer to previous example.")
