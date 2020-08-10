@@ -149,13 +149,27 @@ def command(update, context):
             chat_id=update.effective_chat.id,
             text="Incorrect password, try using /command again")
 
+def passwordprocess(fn):
+    def wrapper(update, context):
+        try:
+            if update.message.text.split(" ")[1] != clickpassword:
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text="Wrong password! Try again")
+                return None
+        except:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="You're using incorrect syntax, refer to previous example.")
+            return None
+        
+        return fn(update, context)
+    return wrapper        
 
-def coords(update, context):
-    if update.message.text.split(" ")[1] != clickpassword:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Wrong password! Try again")
-        return None
+
+@passwordprocess
+def coords(update, context): 
+    #confirmpasswordhere
     showcoords()
     from showcoords import mousechartfullpath
     context.bot.send_photo(
@@ -167,13 +181,9 @@ def coords(update, context):
         chat_id=update.effective_chat.id,
         text="Use '/click [password] [x] [y]' to click on coordinates. Or /showdot [password] [x] [y] to view a red dot on your coordinates")
 
-
+@passwordprocess
 def showdot(update, context):
-    if update.message.text.split(" ")[1] != clickpassword:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Wrong password! Try again")
-        return None
+#confirmpasswordhere
     try:
         showcoords(
             click_x=[int(update.message.text.split(" ")[2])],
@@ -192,19 +202,9 @@ def showdot(update, context):
             mousechartfullpath,
             'rb'))
 
-
+@passwordprocess
 def click(update, context):
-    try:
-        if update.message.text.split(" ")[1] != clickpassword:
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="Wrong password! Try again")
-            return None
-    except BaseException:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="You're using incorrect syntax, refer to previous example.")
-        return None
+# confirmpasswordhere
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
         y_click_cords = int(update.message.text.split(" ")[3])
@@ -218,20 +218,8 @@ def click(update, context):
         chat_id=update.effective_chat.id,
         text="Clicked.")
 
-
+@passwordprocess
 def doubleclick(update, context):
-    try:
-        if update.message.text.split(" ")[1] != clickpassword:
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="Wrong password! Try again")
-            return None
-    except BaseException:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="You're using incorrect syntax, refer to previous example.")
-        return None
-
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
         y_click_cords = int(update.message.text.split(" ")[3])
@@ -245,13 +233,8 @@ def doubleclick(update, context):
         chat_id=update.effective_chat.id,
         text="Double-clicked.")
 
-
+@passwordprocess
 def keyboard(update, context):
-    if update.message.text.split(" ")[1] != clickpassword:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Wrong password! Try again")
-        return None
     try:
         time.sleep(2)
         pyautogui.write(update.message.text.split(" ")[2])
