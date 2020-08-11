@@ -5,8 +5,7 @@ import re
 import time
 from sys import platform
 import pyautogui
-from back_or_forward_slash import back_or_forward_slash
-from secret_tokens import my_bot_token, commandpassword, screenshotfilename, screenshotpath, clickpassword
+from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -21,8 +20,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 
-CAREEM, PHONE, ASK_ABOUT_PHONE, PHONECONFIRM, VERIFY, PASSWORD, SAVEINFO, PICKUP, DROPOFF = range(
-    9)
+CAREEM, PHONE, ASK_ABOUT_PHONE, PHONECONFIRM, VERIFY, PASSWORD, SAVEINFO, PICKUP, DROPOFF = range(9)
 
 
 def hasNumbers(inputString):
@@ -171,11 +169,11 @@ def passwordprocess(fn):
 def coords(update, context): 
     #confirmpasswordhere
     showcoords()
-    from showcoords import mousechartfullpath
+    from showcoords import mousechartfile
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
         photo=open(
-            mousechartfullpath,
+            mousechartfile,
             'rb'))
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -195,11 +193,11 @@ def showdot(update, context):
             text="You're using incorrect syntax, refer to previous example.")
         return None
 
-    from showcoords import mousechartfullpath
+    from showcoords import mousechartfile
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
         photo=open(
-            mousechartfullpath,
+            mousechartfile,
             'rb'))
 
 @passwordprocess
@@ -318,16 +316,13 @@ def phoneconfirm(update, context):
 
 numbers = []
 
-if not os.path.exists(screenshotpath):
-    if platform == "Windows":
-        os.makedirs(screenshotpath.split("\\")[-1])
-    else:
-        os.makedirs(screenshotpath.split("/")[-1])
+if not os.path.exists(screenshotfoldername):
+    os.makedirs(screenshotfoldername)
 
 
 def screenshot(update, context):
     scr1 = pyautogui.screenshot()
-    dt = back_or_forward_slash(screenshotpath, screenshotfilename)
+    dt = screenshotfilename
     scr1.save(dt)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
@@ -481,7 +476,7 @@ def dropoff(update, context):
     driver.find_element_by_xpath(
         "//select[@id='paymentOptionsSelector']/option[text()='Cash']").click()
     time.sleep(3)
-    dt2 = f"{back_or_forward_slash(screenshotpath, screenshotfilename)}"
+    dt2 = screenshotfilename
     pyautogui.screenshot().save(dt2)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,

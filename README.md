@@ -28,7 +28,7 @@
 - cancel: Can cancel conversation midway, unstable at the moment.
 - restart: Restarts entire machine with sudo reboot, only works with Linux.
 - command: Takes command from message, returns terminal output, cannot be used as Python terminal at the moment.
-- showcoords: Exists in showcoords.py. Defines mouseclickfullpath which is the full path of the screenshot PyAutoGUI takes, and mousechartfullpath, which is where the matplotlib figure is saved. Defines grid separation amount, puts text, grids, major ticks, saves figure to mousechartfullpath, opens image with PIL, defines trim function (which automatically crops image and trims whitespace to make the most out of resolution), trims image, and overwrites it to mousechartfullpath.
+- showcoords: Exists in showcoords.py. Defines mouseclickfile which is the full path of the screenshot PyAutoGUI takes, and mousechartfile, which is where the matplotlib figure is saved. Defines grid separation amount, puts text, grids, major ticks, saves figure to mousechartfile, opens image with PIL, defines trim function (which automatically crops image and trims whitespace to make the most out of resolution), trims image, and overwrites it to mousechartfile.
 - coords: Triggers showcoords() function and sends image to user with a grid on top of a screenshot with coordinates
 - showdot: Does everything coords does, and adds a dot to where the user wants the dot's coordinates to be.
 - click: Clicks based on user's coordinates with PyAutoGUI.
@@ -46,19 +46,16 @@
 
 ```python
 from datetime import datetime
-from back_or_forward_slash import back_or_forward_slash
-import os
-my_bot_token = "Bot Token Here"
-commandpassword = "Password Here"
-clickpassword = "Password Here"
-deletepassword = "Password Here"
-dbname = "databasenamehere.db"
-dbpath = r"{path}".format(path=os.getcwd())
-screenshotpath = r"{path}".format(path=back_or_forward_slash(os.getcwd(), "Careem-Bot-Screenshots"))
-screenshotfilename = "screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png"
+my_bot_token = "Bot Token Here" # Telegram Bot Token
+dbname = "telegram_bot_users.db" # Database name
+screenshotfoldername = "Careem-Bot-Screenshots" # Screenshot Folder Name
+screenshotfilename = screenshotfoldername + "/screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png" # Screenshot File Name
+commandpassword = "System Commands Password Here"
+clickpassword = "GUI Control (Coords, Click, Doubleclick, Keyboard) Password Here"
+deletepassword = "DB Deletion Password Here"
 ```
 
-<p>Only things you need to change here are my_bot_token, commandpassword, clickpassword, deletepassword, dbname. DBPath, screenshotpath are based on your current working directory, and screenshotfilename has a timestamp on it.</p>
+<p>Only things you need to change here are my_bot_token, commandpassword, clickpassword, deletepassword. screenshotfilename has a timestamp on it.</p>
 
 <h3> DISCLAIMER: </h3>
 <p> This has really bad code written all across it, but it should give you an idea about the XPATH's, ID's, and CSS Selectors for the Careem ordering UI. </p> 

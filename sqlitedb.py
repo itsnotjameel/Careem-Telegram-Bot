@@ -1,13 +1,12 @@
 import sqlite3
 import platform
 from functools import wraps
-from back_or_forward_slash import back_or_forward_slash
 from secret_tokens import dbpath, dbname, deletepassword
 
 
 def startsqlite():
     global conn
-    conn = sqlite3.connect(back_or_forward_slash(dbpath, dbname))
+    conn = sqlite3.connect(dbname)
     global c
     c = conn.cursor()
 

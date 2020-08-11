@@ -3,8 +3,6 @@ import pyautogui
 import numpy as np
 from matplotlib.text import OffsetFrom
 from PIL import Image, ImageChops
-from secret_tokens import screenshotpath
-from back_or_forward_slash import back_or_forward_slash
 
 
 def rounddown(x):
@@ -13,15 +11,13 @@ def rounddown(x):
 
 def showcoords(click_x=None, click_y=None):
     '''Shows coordinates, possibly with red dots. click_x and click_y are arrays'''
-    global mouseclickfullpath
-    mouseclickfullpath = back_or_forward_slash(
-        screenshotpath, 'mouseclickscreenshot.png')  # full screenshot path
-    global mousechartfullpath
-    mousechartfullpath = back_or_forward_slash(
-        screenshotpath, 'mouseclickchart.png')  # full edited chart path
-    pyautogui.screenshot(mouseclickfullpath)  # take screenshot
+    global mouseclickfile
+    mouseclickfile = 'Careem-Bot-Screenshots/mouseclickscreenshot.png'  # screenshot name
+    global mousechartfile
+    mousechartfile = 'Careem-Bot-Screenshots/mouseclickchart.png'  # edited chart name
+    pyautogui.screenshot(mouseclickfile)  # take screenshot
     screenshotwidth, screenshotheight = Image.open(
-        mouseclickfullpath).size  # getting screenshot size
+        mouseclickfile).size  # getting screenshot size
     # should've been fig, ax = plt.subplots() but trying this
     ax = plt.subplots()[1]
     if click_x is not None and click_y is not None:
@@ -52,7 +48,7 @@ def showcoords(click_x=None, click_y=None):
                  bbox=dict(fill=True,
                            edgecolor='red',
                            linewidth=1))
-    image = plt.imread(mouseclickfullpath)  # matplotlib reading screenshot
+    image = plt.imread(mouseclickfile)  # matplotlib reading screenshot
     # arranging (idk, length of width, interval)
     major_ticks = np.arange(0, screenshotwidth, separation)
     plt.tick_params(labelsize=3.5)  # font size
@@ -61,8 +57,8 @@ def showcoords(click_x=None, click_y=None):
     ax.grid(which='both')  # you need this to make a full grid
     ax.imshow(image, extent=[0, screenshotwidth, 0, screenshotheight])
     plt.imshow(image)
-    plt.savefig(mousechartfullpath, dpi=300)  # saving figure
-    image = Image.open(mousechartfullpath)
+    plt.savefig(mousechartfile, dpi=300)  # saving figure
+    image = Image.open(mousechartfile)
 
     def trim(im):
         bg = Image.new(im.mode, im.size, im.getpixel((0, 0)))
@@ -75,6 +71,6 @@ def showcoords(click_x=None, click_y=None):
             raise AttributeError(
                 "bbox value == None, try converting image into RGB if you haven't already done so.")
 
-    im = Image.open(mousechartfullpath)
+    im = Image.open(mousechartfile)
     im = trim(im)
-    im.save(mousechartfullpath)
+    im.save(mousechartfile)
