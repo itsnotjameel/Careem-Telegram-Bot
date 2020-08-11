@@ -1,7 +1,7 @@
 import sqlite3
 import platform
 from functools import wraps
-from secret_tokens import dbpath, dbname, deletepassword
+from secret_tokens import dbname, deletepassword
 
 
 def startsqlite():
