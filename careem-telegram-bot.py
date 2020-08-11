@@ -5,6 +5,7 @@ import re
 import time
 from sys import platform
 import pyautogui
+from functools import wraps
 from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -148,6 +149,7 @@ def command(update, context):
             text="Incorrect password, try using /command again")
 
 def passwordprocess(fn):
+    @wraps(fn)
     def wrapper(update, context):
         try:
             if update.message.text.split(" ")[1] != clickpassword:
