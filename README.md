@@ -40,7 +40,7 @@
 <h3>INSTRUCTIONS:</h3>
 
 1. Create a Telegram bot, and get the bot token.
-2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandpassword, clickpassword, deletepassword, dbname, dbpath, screenshotpath, screenshotfilename`
+2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandpassword, clickpassword, deletepassword, dbname, screenshotfilename.`
 
 <h5>Ideal secret_tokens.py file:</h5>
 
