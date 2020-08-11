@@ -3,18 +3,14 @@ import pyautogui
 import numpy as np
 from matplotlib.text import OffsetFrom
 from PIL import Image, ImageChops
-
-
-def rounddown(x):
-    return x / 100
-
+from secret_tokens import screenshotfoldername
 
 def showcoords(click_x=None, click_y=None):
     '''Shows coordinates, possibly with red dots. click_x and click_y are arrays'''
     global mouseclickfile
-    mouseclickfile = 'Careem-Bot-Screenshots/mouseclickscreenshot.png'  # screenshot name
+    mouseclickfile = screenshotfoldername + '/mouseclickscreenshot.png'  # screenshot name
     global mousechartfile
-    mousechartfile = 'Careem-Bot-Screenshots/mouseclickchart.png'  # edited chart name
+    mousechartfile = screenshotfoldername + '/mouseclickchart.png'  # edited chart name
     pyautogui.screenshot(mouseclickfile)  # take screenshot
     screenshotwidth, screenshotheight = Image.open(
         mouseclickfile).size  # getting screenshot size

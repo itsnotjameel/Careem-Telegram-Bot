@@ -167,7 +167,6 @@ def passwordprocess(fn):
 
 @passwordprocess
 def coords(update, context): 
-    #confirmpasswordhere
     showcoords()
     from showcoords import mousechartfile
     context.bot.send_photo(
@@ -181,7 +180,6 @@ def coords(update, context):
 
 @passwordprocess
 def showdot(update, context):
-#confirmpasswordhere
     try:
         showcoords(
             click_x=[int(update.message.text.split(" ")[2])],
@@ -202,7 +200,6 @@ def showdot(update, context):
 
 @passwordprocess
 def click(update, context):
-# confirmpasswordhere
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
         y_click_cords = int(update.message.text.split(" ")[3])
