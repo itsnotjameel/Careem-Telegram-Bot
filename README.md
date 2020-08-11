@@ -47,7 +47,7 @@
 ```python
 from datetime import datetime
 my_bot_token = "Bot Token Here" # Telegram Bot Token
-dbname = "telegram_bot_users.db" # Database name
+dbname = "telegram_bot_users.db" # Database Name
 screenshotfoldername = "Careem-Bot-Screenshots" # Screenshot Folder Name
 screenshotfilename = screenshotfoldername + "/screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png" # Screenshot File Name
 commandpassword = "System Commands Password Here"
