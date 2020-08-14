@@ -119,55 +119,46 @@ def careem(update, context):
     return PHONE
 
 
+def passwordprocess(passwordtype):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(update, context):
+            try:
+                if update.message.text.split(" ")[1] != passwordtype:
+                    context.bot.send_message(
+                        chat_id=update.effective_chat.id,
+                        text="Wrong password! Try again")
+                    return None
+            except:
+                context.bot.send_message(
+                    chat_id=update.effective_chat.id,
+                    text="You're using incorrect syntax, refer to previous example.")
+                return None
+            
+            return fn(update, context)
+        return wrapper
+    return decorator
+
+@passwordprocess(commandpassword)
 def restart(update, context):
-    if update.message.text.split(" ")[1] != commandpassword:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Wrong password! Try again")
-        return None
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Restarting, please wait for 30 seconds")
     time.sleep(5)
     os.system("sudo reboot")
 
-
+@passwordprocess(commandpassword)
 def command(update, context):
-    if commandpassword in update.message.text:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Correct password, executing")
-        actualcommand = update.message.text.split(" ", 2)[2]
-        command_output = os.popen(actualcommand).read()
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text=f"Output: \n {command_output}")
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Correct password, executing")
+    actualcommand = update.message.text.split(" ", 2)[2]
+    command_output = os.popen(actualcommand).read()
+    context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=f"Output: \n {command_output}")
 
-    elif commandpassword not in update.message.text:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Incorrect password, try using /command again")
-
-def passwordprocess(fn):
-    @wraps(fn)
-    def wrapper(update, context):
-        try:
-            if update.message.text.split(" ")[1] != clickpassword:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="Wrong password! Try again")
-                return None
-        except:
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="You're using incorrect syntax, refer to previous example.")
-            return None
-        
-        return fn(update, context)
-    return wrapper        
-
-
-@passwordprocess
+@passwordprocess(clickpassword)
 def coords(update, context): 
     showcoords()
     from showcoords import mousechartfile
@@ -180,7 +171,7 @@ def coords(update, context):
         chat_id=update.effective_chat.id,
         text="Use '/click [password] [x] [y]' to click on coordinates. Or /showdot [password] [x] [y] to view a red dot on your coordinates")
 
-@passwordprocess
+@passwordprocess(clickpassword)
 def showdot(update, context):
     try:
         showcoords(
@@ -200,7 +191,7 @@ def showdot(update, context):
             mousechartfile,
             'rb'))
 
-@passwordprocess
+@passwordprocess(clickpassword)
 def click(update, context):
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
@@ -215,7 +206,7 @@ def click(update, context):
         chat_id=update.effective_chat.id,
         text="Clicked.")
 
-@passwordprocess
+@passwordprocess(clickpassword)
 def doubleclick(update, context):
     try:
         x_click_cords = int(update.message.text.split(" ")[2])
@@ -230,7 +221,7 @@ def doubleclick(update, context):
         chat_id=update.effective_chat.id,
         text="Double-clicked.")
 
-@passwordprocess
+@passwordprocess(clickpassword)
 def keyboard(update, context):
     try:
         time.sleep(2)
