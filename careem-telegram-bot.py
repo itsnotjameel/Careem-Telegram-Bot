@@ -126,7 +126,7 @@ def startAdminCountDown(length=900):
     global isAdmin
     isAdmin = False
 
-def passwordprocess(passwordtype):
+def passwordprocess(password):
     def decorator(fn):
         @wraps(fn)
         def wrapper(update, context):
@@ -135,7 +135,7 @@ def passwordprocess(passwordtype):
                 global umt_full
                 umt_full = update.message.text
                 try:
-                    if update.message.text.split(" ")[1] != passwordtype:
+                    if update.message.text.split(" ")[1] != password:
                         context.bot.send_message(
                             chat_id=update.effective_chat.id,
                             text="Wrong password! Try again")
@@ -149,7 +149,7 @@ def passwordprocess(passwordtype):
                     isAdmin = True
                     context.bot.send_message(
                         chat_id=update.effective_chat.id,
-                        text="You're an Admin now.")
+                        text=f"You're an admin for {adminSessionLength} seconds now.")
                     countdownthread = threading.Thread(target=startAdminCountDown, kwargs=dict(length=adminSessionLength))
                     countdownthread.daemon = True   
                     countdownthread.start()
@@ -157,7 +157,7 @@ def passwordprocess(passwordtype):
             elif isAdmin:
                 print(f"Executing '{fn.__name__}' as admin.")
                 umt_split = update.message.text.split()  # update.message.text split up
-                umt_split.insert(1, passwordtype) # update.message.text with password inserted and joined
+                umt_split.insert(1, password) # update.message.text with password inserted and joined
                 umt_full = " ".join(umt_split)
                 return fn(update, context)
         return wrapper
