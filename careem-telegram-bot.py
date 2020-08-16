@@ -3,10 +3,11 @@ import os
 import random
 import re
 import time
+import threading
 from sys import platform
 import pyautogui
 from functools import wraps
-from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword, adminpassword
+from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword, adminpassword, adminSessionLength
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -120,6 +121,10 @@ def careem(update, context):
                 one_time_keyboard=True))
     return PHONE
 
+def startAdminCountDown(length=900):
+    time.sleep(length)
+    global isAdmin
+    isAdmin = False
 
 def passwordprocess(passwordtype):
     def decorator(fn):
@@ -145,9 +150,12 @@ def passwordprocess(passwordtype):
                     context.bot.send_message(
                         chat_id=update.effective_chat.id,
                         text="You're an Admin now.")
+                    countdownthread = threading.Thread(target=startAdminCountDown, kwargs=dict(length=adminSessionLength))
+                    countdownthread.daemon = True   
+                    countdownthread.start()
                 return fn(update, context)
             elif isAdmin:
-                print("isAdmin is true, executing func")
+                print(f"Executing '{fn.__name__}' as admin.")
                 umt_split = update.message.text.split()  # update.message.text split up
                 umt_split.insert(1, passwordtype) # update.message.text with password inserted and joined
                 umt_full = " ".join(umt_split)
