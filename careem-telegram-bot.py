@@ -6,7 +6,7 @@ import time
 from sys import platform
 import pyautogui
 from functools import wraps
-from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword
+from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword, adminpassword
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -21,7 +21,8 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 
-CAREEM, PHONE, ASK_ABOUT_PHONE, PHONECONFIRM, VERIFY, PASSWORD, SAVEINFO, PICKUP, DROPOFF = range(9)
+CAREEM, PHONE, ASK_ABOUT_PHONE, PHONECONFIRM, VERIFY, PASSWORD, SAVEINFO, PICKUP, DROPOFF = range(
+    9)
 
 
 def hasNumbers(inputString):
@@ -29,6 +30,7 @@ def hasNumbers(inputString):
 
 
 startcommandused = False
+isAdmin = False
 
 
 def start(update, context):
@@ -123,21 +125,41 @@ def passwordprocess(passwordtype):
     def decorator(fn):
         @wraps(fn)
         def wrapper(update, context):
-            try:
-                if update.message.text.split(" ")[1] != passwordtype:
+            global isAdmin
+            if not isAdmin:
+                global umt_full
+                umt_full = update.message.text
+                try:
+                    if update.message.text.split(" ")[1] != passwordtype:
+                        context.bot.send_message(
+                            chat_id=update.effective_chat.id,
+                            text="Wrong password! Try again")
+                        return None
+                except BaseException:
                     context.bot.send_message(
                         chat_id=update.effective_chat.id,
-                        text="Wrong password! Try again")
+                        text="You're using incorrect syntax, refer to previous example.")
                     return None
-            except:
-                context.bot.send_message(
-                    chat_id=update.effective_chat.id,
-                    text="You're using incorrect syntax, refer to previous example.")
-                return None
-            
-            return fn(update, context)
+                if fn.__name__ == "admin":
+                    isAdmin = True
+                    context.bot.send_message(
+                        chat_id=update.effective_chat.id,
+                        text="You're an Admin now.")
+                return fn(update, context)
+            elif isAdmin:
+                print("isAdmin is true, executing func")
+                umt_split = update.message.text.split()  # update.message.text split up
+                umt_split.insert(1, passwordtype) # update.message.text with password inserted and joined
+                umt_full = " ".join(umt_split)
+                return fn(update, context)
         return wrapper
     return decorator
+
+
+@passwordprocess(adminpassword)
+def admin(update, context):
+    print(f"{update.message.from_user.username} is Admin.")
+
 
 @passwordprocess(commandpassword)
 def restart(update, context):
@@ -147,19 +169,21 @@ def restart(update, context):
     time.sleep(5)
     os.system("sudo reboot")
 
+
 @passwordprocess(commandpassword)
 def command(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Correct password, executing")
-    actualcommand = update.message.text.split(" ", 2)[2]
+    actualcommand = umt_full.split(" ", 2)[2]
     command_output = os.popen(actualcommand).read()
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f"Output: \n {command_output}")
 
+
 @passwordprocess(clickpassword)
-def coords(update, context): 
+def coords(update, context):
     showcoords()
     from showcoords import mousechartfile
     context.bot.send_photo(
@@ -171,12 +195,13 @@ def coords(update, context):
         chat_id=update.effective_chat.id,
         text="Use '/click [password] [x] [y]' to click on coordinates. Or /showdot [password] [x] [y] to view a red dot on your coordinates")
 
+
 @passwordprocess(clickpassword)
 def showdot(update, context):
     try:
         showcoords(
-            click_x=[int(update.message.text.split(" ")[2])],
-            click_y=[int(update.message.text.split(" ")[3])]
+            click_x=[int(umt_full.split(" ")[2])],
+            click_y=[int(umt_full.split(" ")[3])]
         )
     except BaseException:
         context.bot.send_message(
@@ -191,11 +216,12 @@ def showdot(update, context):
             mousechartfile,
             'rb'))
 
+
 @passwordprocess(clickpassword)
 def click(update, context):
     try:
-        x_click_cords = int(update.message.text.split(" ")[2])
-        y_click_cords = int(update.message.text.split(" ")[3])
+        x_click_cords = int(umt_full.split(" ")[2])
+        y_click_cords = int(umt_full.split(" ")[3])
     except BaseException:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -206,11 +232,12 @@ def click(update, context):
         chat_id=update.effective_chat.id,
         text="Clicked.")
 
+
 @passwordprocess(clickpassword)
 def doubleclick(update, context):
     try:
-        x_click_cords = int(update.message.text.split(" ")[2])
-        y_click_cords = int(update.message.text.split(" ")[3])
+        x_click_cords = int(umt_full.split(" ")[2])
+        y_click_cords = int(umt_full.split(" ")[3])
     except BaseException:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -221,11 +248,12 @@ def doubleclick(update, context):
         chat_id=update.effective_chat.id,
         text="Double-clicked.")
 
+
 @passwordprocess(clickpassword)
 def keyboard(update, context):
     try:
         time.sleep(2)
-        pyautogui.write(update.message.text.split(" ")[2])
+        pyautogui.write(umt_full.split(" ")[2])
     except BaseException:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -310,6 +338,7 @@ if not os.path.exists(screenshotfoldername):
     os.makedirs(screenshotfoldername)
 
 
+@passwordprocess(clickpassword)
 def screenshot(update, context):
     scr1 = pyautogui.screenshot()
     dt = screenshotfilename
@@ -499,6 +528,7 @@ def main():
     global dp
     dp = updater.dispatcher
     dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("admin", admin))
     dp.add_handler(CommandHandler("restart", restart))
     dp.add_handler(CommandHandler("screenshot", screenshot))
     dp.add_handler(CommandHandler("command", command))
