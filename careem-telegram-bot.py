@@ -7,7 +7,7 @@ import threading
 from sys import platform
 import pyautogui
 from functools import wraps
-from secret_tokens import my_bot_token, commandpassword, screenshotfoldername, screenshotfilename, clickpassword, adminpassword, adminSessionLength
+from secret_tokens import my_bot_token, commandPassword, screenshotFolderName, screenshotFileName, clickPassword, adminPassword, adminSessionLength
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -38,12 +38,12 @@ def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=f"""Welcome to CareeemBot!
                  \n-Use /careem to start the ordering process
                  \n-To take a screenshot, use /screenshot
-                 \n-(for admins) To restart the machine, use /restart [commandpassword]
-                 \n-(for admins) To give system commands, use /command [commandpassword] [command]
-                 \n-(for admins) To get screen coordinates, use /coords [clickpassword]
-                 \n-(for admins) To click using PyAutoGUI, use /doubleclick or /click [clickpassword] [x] [y]
-                 \n-(for admins) To show a supposed click's coordinates, use /showdot [clickpassword] [x] [y]
-                 \n-(for admins) To type using the machine's keyboard, use /keyboard [clickpassword] [string]
+                 \n-(for admins) To restart the machine, use /restart [commandPassword]
+                 \n-(for admins) To give system commands, use /command [commandPassword] [command]
+                 \n-(for admins) To get screen coordinates, use /coords [clickPassword]
+                 \n-(for admins) To click using PyAutoGUI, use /doubleclick or /click [clickPassword] [x] [y]
+                 \n-(for admins) To show a supposed click's coordinates, use /showdot [clickPassword] [x] [y]
+                 \n-(for admins) To type using the machine's keyboard, use /keyboard [clickPassword] [string]
                  \n-Your User ID is: {update.effective_user.id}""",
                              reply_markup=ReplyKeyboardMarkup([["/careem", "/restart", "/screenshot"]],
                                                               one_time_keyboard=True))
@@ -164,12 +164,12 @@ def passwordprocess(passwordtype):
     return decorator
 
 
-@passwordprocess(adminpassword)
+@passwordprocess(adminPassword)
 def admin(update, context):
     print(f"{update.message.from_user.username} is Admin.")
 
 
-@passwordprocess(commandpassword)
+@passwordprocess(commandPassword)
 def restart(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -178,7 +178,7 @@ def restart(update, context):
     os.system("sudo reboot")
 
 
-@passwordprocess(commandpassword)
+@passwordprocess(commandPassword)
 def command(update, context):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -190,7 +190,7 @@ def command(update, context):
         text=f"Output: \n {command_output}")
 
 
-@passwordprocess(clickpassword)
+@passwordprocess(clickPassword)
 def coords(update, context):
     showcoords()
     from showcoords import mousechartfile
@@ -204,7 +204,7 @@ def coords(update, context):
         text="Use '/click [password] [x] [y]' to click on coordinates. Or /showdot [password] [x] [y] to view a red dot on your coordinates")
 
 
-@passwordprocess(clickpassword)
+@passwordprocess(clickPassword)
 def showdot(update, context):
     try:
         showcoords(
@@ -225,7 +225,7 @@ def showdot(update, context):
             'rb'))
 
 
-@passwordprocess(clickpassword)
+@passwordprocess(clickPassword)
 def click(update, context):
     try:
         x_click_cords = int(umt_full.split(" ")[2])
@@ -241,7 +241,7 @@ def click(update, context):
         text="Clicked.")
 
 
-@passwordprocess(clickpassword)
+@passwordprocess(clickPassword)
 def doubleclick(update, context):
     try:
         x_click_cords = int(umt_full.split(" ")[2])
@@ -257,7 +257,7 @@ def doubleclick(update, context):
         text="Double-clicked.")
 
 
-@passwordprocess(clickpassword)
+@passwordprocess(clickPassword)
 def keyboard(update, context):
     try:
         time.sleep(2)
@@ -342,14 +342,14 @@ def phoneconfirm(update, context):
 
 numbers = []
 
-if not os.path.exists(screenshotfoldername):
-    os.makedirs(screenshotfoldername)
+if not os.path.exists(screenshotFolderName):
+    os.makedirs(screenshotFolderName)
 
 
-@passwordprocess(clickpassword)
+@passwordprocess(clickPassword)
 def screenshot(update, context):
     scr1 = pyautogui.screenshot()
-    dt = screenshotfilename
+    dt = screenshotFileName
     scr1.save(dt)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,
@@ -503,7 +503,7 @@ def dropoff(update, context):
     driver.find_element_by_xpath(
         "//select[@id='paymentOptionsSelector']/option[text()='Cash']").click()
     time.sleep(3)
-    dt2 = screenshotfilename
+    dt2 = screenshotFileName
     pyautogui.screenshot().save(dt2)
     context.bot.send_photo(
         chat_id=update.effective_chat.id,

@@ -40,22 +40,22 @@
 <h3>INSTRUCTIONS:</h3>
 
 1. Create a Telegram bot, and get the bot token.
-2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandpassword, clickpassword, deletepassword, dbname, screenshotfilename.`
+2. Create a secret_tokens.py file in the same folder, use the ideal file below, or define your own `bot_token, commandPassword, clickPassword, deletePassword, dbName, screenshotFileName.`
 
 <h5>Ideal secret_tokens.py file:</h5>
 
 ```python
 from datetime import datetime
 my_bot_token = "Bot Token Here" # Telegram Bot Token
-dbname = "telegram_bot_users.db" # Database Name
-screenshotfoldername = "Careem-Bot-Screenshots" # Screenshot Folder Name
-screenshotfilename = screenshotfoldername + "/screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png" # Screenshot File Name
-commandpassword = "System Commands Password Here"
-clickpassword = "GUI Control (Coords, Click, Doubleclick, Keyboard) Password Here"
-deletepassword = "DB Deletion Password Here"
+dbName = "telegram_bot_users.db" # Database Name
+screenshotFolderName = "Careem-Bot-Screenshots" # Screenshot Folder Name
+screenshotFileName = screenshotFolderName + "/screengrab-" + datetime.now().strftime("%Y-%m-%dT%H-%M-%S") + ".png" # Screenshot File Name
+commandPassword = "System Commands Password Here"
+clickPassword = "GUI Control (Coords, Click, Doubleclick, Keyboard) Password Here"
+deletePassword = "DB Deletion Password Here"
 ```
 
-<p>Only things you need to change here are my_bot_token, commandpassword, clickpassword, deletepassword. screenshotfilename has a timestamp on it.</p>
+<p>Only things you need to change here are my_bot_token, commandPassword, clickPassword, deletePassword. screenshotFileName has a timestamp on it.</p>
 
 <h3> DISCLAIMER: </h3>
 <p> This has really bad code written all across it, but it should give you an idea about the XPATH's, ID's, and CSS Selectors for the Careem ordering UI. </p> 

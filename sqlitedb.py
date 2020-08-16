@@ -1,12 +1,12 @@
 import sqlite3
 import platform
 from functools import wraps
-from secret_tokens import dbname, deletepassword
+from secret_tokens import dbName, deletePassword
 
 
 def startsqlite():
     global conn
-    conn = sqlite3.connect(dbname)
+    conn = sqlite3.connect(dbName)
     global c
     c = conn.cursor()
 
@@ -72,7 +72,7 @@ def enternewdata(user_id, goodphonenum, goodpassword):
 def deleteeverything():
     while True:
         password = input("What's the password?")
-        if password == deletepassword:
+        if password == deletePassword:
             print("Correct password, executing...")
             c.execute(f"""DELETE FROM users""")
             print("Deleted all items successfully.")
