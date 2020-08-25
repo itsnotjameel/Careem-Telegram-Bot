@@ -34,7 +34,7 @@ def start_and_end(fn):
 @start_and_end
 def checkifsamedetails(user_id, goodphonenum, goodpassword):
     c.execute(
-        f"""SELECT ID, Phone, Password FROM users WHERE ID ={user_id} AND Phone ={goodphonenum} AND Password ='{goodpassword}'   """)
+"SELECT ID, Phone, Password FROM users WHERE ID =? AND Phone =? AND Password =? ", (user_id, goodphonenum, goodpassword))
     if c.fetchone() is not None:
         return True
     else:
@@ -43,7 +43,7 @@ def checkifsamedetails(user_id, goodphonenum, goodpassword):
 
 @start_and_end
 def checkifregistered(user_id):
-    c.execute(f"""SELECT Phone, Password FROM users WHERE ID ={user_id}""")
+    c.execute("SELECT Phone, Password FROM users WHERE ID =?", (user_id))
     checkifregisteredinfo = c.fetchone()
     if checkifregisteredinfo is not None and len(checkifregisteredinfo) == 2:
         global savednumber
@@ -57,15 +57,15 @@ def checkifregistered(user_id):
 
 @start_and_end
 def replacedata(user_id, goodphonenum, goodpassword):
-    c.execute(f"""DELETE FROM users WHERE ID == {user_id}""")
+    c.execute("DELETE FROM users WHERE ID =?", (user_id))
     c.execute(
-        f"""INSERT INTO users VALUES ({user_id}, {goodphonenum}, '{goodpassword}')""")
+        "INSERT INTO users VALUES (?, ?, ?)", (user_id, goodphonenum, goodpassword))
 
 
 @start_and_end
 def enternewdata(user_id, goodphonenum, goodpassword):
     c.execute(
-        f"""INSERT INTO users VALUES ({user_id}, {goodphonenum}, '{goodpassword}')""")
+        "INSERT INTO users VALUES (?, ?, ?)", (user_id, goodphonenum, goodpassword))
 
 
 @start_and_end
