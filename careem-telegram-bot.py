@@ -360,10 +360,10 @@ def screenshot(update, context):
 
 def verify(update, context):
     if hasNumbers(update.message.text):
-        global code
-        code = re.findall('\\d+', update.message.text)  # get numbers from text
+        global verificationCode
+        verificationCode = re.findall('\\d+', update.message.text)  # get numbers from text
         form = driver.find_element_by_id('otp')
-        form.send_keys(code)
+        form.send_keys(verificationCode)
         time.sleep(5)
         driver.find_element_by_id('login-btn').click()
         time.sleep(10)
